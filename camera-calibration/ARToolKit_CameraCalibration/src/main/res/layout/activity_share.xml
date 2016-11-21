@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="org.artoolkit.ar6.camera_calibration.share.ShareActivity">
+
+    <ListView android:id="@+id/shareList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:choiceMode="singleChoice"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp"
+        android:layout_weight="1"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="131dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical|center|end"
+        android:layout_weight="2"
+        style="@style/solidBackground">
+        <ImageButton
+            android:contentDescription="@string/deleteCalibrationFiles"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_delete_forever_white_24px"
+            android:padding="15dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_gravity="center"
+            android:foregroundGravity="center"
+            style="@style/solidBackground"
+            android:id="@+id/button_shareDelete"
+            />
+    </LinearLayout>
+
+</LinearLayout>

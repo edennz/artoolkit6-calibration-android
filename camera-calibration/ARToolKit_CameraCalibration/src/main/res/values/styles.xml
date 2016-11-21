@@ -1,0 +1,26 @@
+<resources>
+
+    <style name="CameraCalibrationTheme" parent="Theme.AppCompat.Light">
+        <item name="colorPrimary">@color/primary_artk_light</item>
+        <item name="colorPrimaryDark">@color/primary_dark_artk_light</item>
+        <item name="colorAccent">@color/highlight_artk_light</item>
+        <item name="android:windowBackground">@color/background_artk_light</item>
+        <item name="android:textColor">@color/primary_text_default_material_light</item>
+        <item name="android:colorForeground">@color/primary_text_default_material_light</item>
+    </style>
+
+    <style name="SplashTheme" parent="CameraCalibrationTheme">
+        <item name="android:windowBackground">@drawable/splash_drawable</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <style name="SemiTransparent" parent="CameraCalibrationTheme">
+        <item name="android:background">@color/primary_dark_artk_light_trans</item>
+    </style>
+
+    <style name="solidBackground" parent="CameraCalibrationTheme">
+        <item name="android:background">
+            @color/background_artk_light
+        </item>
+    </style>
+</resources>

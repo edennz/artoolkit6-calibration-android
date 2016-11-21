@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="org.artoolkit.ar6.camera_calibration.CalibrationDetails"
+    android:id="@+id/view_camera_calibration_detail">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin">
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/chart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="131dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical|center|end"
+        android:layout_weight="2"
+        style="@style/solidBackground">
+        <ImageButton
+            android:contentDescription="@string/deleteCalibrationFrame"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_delete_forever_white_24px"
+            android:padding="15dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_gravity="center"
+            style="@style/solidBackground"
+            android:id="@+id/button_calibDelete"
+            android:foregroundGravity="center"
+            android:clickable="false"/>
+        <ImageButton
+            android:contentDescription="@string/startCalibrationDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_done_white_24px"
+            android:padding="15dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_gravity="center"
+            android:foregroundGravity="center"
+            style="@style/solidBackground"
+            android:id="@+id/button_calibDeleteConfirm"
+            android:clickable="false"
+            />
+    </LinearLayout>
+
+</LinearLayout>
