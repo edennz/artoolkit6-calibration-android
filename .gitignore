@@ -8,3 +8,9 @@ camera-calibration/build
 camera-calibration/ARToolKit_CameraCalibration/src/main/obj
 gdbserver
 gdb.setup
+Source/camera-calibration/openCVLibrary310/build
+Source/camera-calibration/build
+Source/camera-calibration/ARToolKit_CameraCalibration/build
+Source/camera-calibration/ARToolKit_CameraCalibration/.externalNativeBuild
+Source/camera-calibration/.idea
+Source/camera-calibration/.gradle
