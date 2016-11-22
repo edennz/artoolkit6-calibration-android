@@ -14,3 +14,4 @@ Source/camera-calibration/ARToolKit_CameraCalibration/build
 Source/camera-calibration/ARToolKit_CameraCalibration/.externalNativeBuild
 Source/camera-calibration/.idea
 Source/camera-calibration/.gradle
+local.properties
