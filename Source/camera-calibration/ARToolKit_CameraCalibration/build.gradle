@@ -10,7 +10,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 22  //For now that needs to be 22 because the OpenCV libs still use CameraAPI 1
 
-        versionCode 608
+        versionCode 600
         versionName "6.0"
     }
 
