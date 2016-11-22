@@ -62,8 +62,7 @@
 
 #include <sys/time.h> // struct timeval, gettimeofday(), timeradd()
 #include <stdbool.h>
-#include "../../../../../../../../../Library/Android/sdk/ndk-bundle/platforms/android-15/arch-arm/usr/include/jni.h"
-#include "../../../../../../../../../Library/Android/sdk/ndk-bundle/platforms/android-15/arch-mips/usr/include/jni.h"
+#include "jni.h"
 
 #ifdef __cplusplus
 extern "C" {
