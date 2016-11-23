@@ -1,25 +1,18 @@
-package org.artoolkit.ar6.camera_calibration;
+package org.artoolkit.ar6.calib_camera;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
-import org.artoolkit.ar6.camera_calibration.guide.CalibrationGuide;
-import org.artoolkit.ar6.camera_calibration.utils.RotationConverters;
+import org.artoolkit.ar6.calib_camera.utils.RotationConverters;
 import org.opencv.calib3d.Calib3d;
-import org.opencv.core.Algorithm;
 import org.opencv.core.Core;
-import org.opencv.core.CvException;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfDouble;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.MatOfPoint3f;
-import org.opencv.core.Point;
-import org.opencv.core.Scalar;
 import org.opencv.core.Size;
-import org.opencv.imgproc.Imgproc;
 
 import android.util.Log;
 

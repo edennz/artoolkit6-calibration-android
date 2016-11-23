@@ -1,4 +1,4 @@
-package org.artoolkit.ar6.camera_calibration.share;
+package org.artoolkit.ar6.calib_camera.share;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -6,7 +6,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import org.opencv.ar6.camera_calibration.R;
+
+import org.artoolkit.ar6.calib_camera.R;
 
 import java.io.File;
 import java.util.ArrayList;

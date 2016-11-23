@@ -1,4 +1,4 @@
-package org.artoolkit.ar6.camera_calibration.guide;
+package org.artoolkit.ar6.calib_camera.guide;
 
 /**
  * ARToolKit6

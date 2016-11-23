@@ -1,4 +1,4 @@
-package org.artoolkit.ar6.camera_calibration.utils;
+package org.artoolkit.ar6.calib_camera.utils;
 
 import android.content.Context;
 import android.graphics.Color;

@@ -11,7 +11,7 @@
 // When you've captured necessary amount of pattern corners (usually ~20 are enough),
 // press "Calibrate" button for performing camera calibration.
 
-package org.artoolkit.ar6.camera_calibration;
+package org.artoolkit.ar6.calib_camera;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -41,15 +41,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.artoolkit.ar6.camera_calibration.guide.CalibrationGuide;
-import org.artoolkit.ar6.camera_calibration.guide.CalibrationGuideListener;
-import org.artoolkit.ar6.camera_calibration.menu.MenuArrayAdapter;
-import org.artoolkit.ar6.camera_calibration.share.ShareActivity;
+import org.artoolkit.ar6.calib_camera.guide.CalibrationGuide;
+import org.artoolkit.ar6.calib_camera.guide.CalibrationGuideListener;
+import org.artoolkit.ar6.calib_camera.menu.MenuArrayAdapter;
+import org.artoolkit.ar6.calib_camera.share.ShareActivity;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewFrame;
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewListener2;
 import org.opencv.android.StaticHelper;
-import org.opencv.ar6.camera_calibration.R;
 import org.opencv.core.Mat;
 
 import java.io.File;

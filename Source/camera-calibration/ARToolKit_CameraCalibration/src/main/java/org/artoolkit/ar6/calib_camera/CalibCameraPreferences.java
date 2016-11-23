@@ -35,7 +35,7 @@
  *
  */
 
-package org.artoolkit.ar6.camera_calibration;
+package org.artoolkit.ar6.calib_camera;
 
 import android.annotation.TargetApi;
 import android.content.SharedPreferences;
@@ -47,8 +47,6 @@ import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.PreferenceActivity;
 import android.util.Log;
-
-import org.opencv.ar6.camera_calibration.R;
 
 import java.util.List;
 

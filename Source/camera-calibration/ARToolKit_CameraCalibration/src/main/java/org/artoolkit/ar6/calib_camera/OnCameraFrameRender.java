@@ -1,9 +1,9 @@
-package org.artoolkit.ar6.camera_calibration;
+package org.artoolkit.ar6.calib_camera;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.artoolkit.ar6.camera_calibration.guide.CalibrationGuide;
+import org.artoolkit.ar6.calib_camera.guide.CalibrationGuide;
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewFrame;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;

@@ -1,4 +1,4 @@
-package org.artoolkit.ar6.camera_calibration.share;
+package org.artoolkit.ar6.calib_camera.share;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -11,7 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
-import org.opencv.ar6.camera_calibration.R;
+import org.artoolkit.ar6.calib_camera.R;
 
 import java.io.File;
 import java.util.ArrayList;

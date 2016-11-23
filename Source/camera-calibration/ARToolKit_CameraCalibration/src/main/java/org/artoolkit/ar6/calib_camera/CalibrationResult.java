@@ -1,4 +1,4 @@
-package org.artoolkit.ar6.camera_calibration;
+package org.artoolkit.ar6.calib_camera;
 
 import org.opencv.core.Mat;
 

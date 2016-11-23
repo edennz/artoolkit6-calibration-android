@@ -1,4 +1,4 @@
-package org.artoolkit.ar6.camera_calibration;
+package org.artoolkit.ar6.calib_camera;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -20,8 +20,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
-import org.artoolkit.ar6.camera_calibration.utils.ImageButtonDisable;
-import org.opencv.ar6.camera_calibration.R;
+import org.artoolkit.ar6.calib_camera.utils.ImageButtonDisable;
 import org.opencv.core.Mat;
 
 import java.util.ArrayList;

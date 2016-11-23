@@ -1,7 +1,4 @@
-package org.artoolkit.ar6.camera_calibration.utils;
-
-import android.graphics.Matrix;
-import android.renderscript.Matrix2f;
+package org.artoolkit.ar6.calib_camera.utils;
 
 import org.opencv.calib3d.Calib3d;
 import org.opencv.core.Core;

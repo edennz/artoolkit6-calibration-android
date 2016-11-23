@@ -1,6 +1,5 @@
-package org.artoolkit.ar6.camera_calibration.menu;
+package org.artoolkit.ar6.calib_camera.menu;
 
-import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,8 +7,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.artoolkit.ar6.camera_calibration.CameraCalibrationActivity;
-import org.opencv.ar6.camera_calibration.R;
+import org.artoolkit.ar6.calib_camera.CameraCalibrationActivity;
+import org.artoolkit.ar6.calib_camera.R;
 
 import java.util.ArrayList;
 
@@ -54,7 +53,7 @@ public class MenuArrayAdapter extends ArrayAdapter<String>{
     private final int mMenuResource;
 
     public MenuArrayAdapter(CameraCalibrationActivity cameraCalibrationActivity, ArrayList<String> strings) {
-        super(cameraCalibrationActivity,R.layout.menu_list_item,strings);
+        super(cameraCalibrationActivity, R.layout.menu_list_item,strings);
         mMenuResource = R.layout.menu_list_item;
     }
 

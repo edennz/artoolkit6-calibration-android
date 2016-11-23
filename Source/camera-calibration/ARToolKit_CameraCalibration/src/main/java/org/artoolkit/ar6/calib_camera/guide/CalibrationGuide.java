@@ -1,4 +1,4 @@
-package org.artoolkit.ar6.camera_calibration.guide;
+package org.artoolkit.ar6.calib_camera.guide;
 
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
@@ -8,9 +8,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import org.artoolkit.ar6.camera_calibration.CameraCalibrationActivity;
-import org.artoolkit.ar6.camera_calibration.CameraCalibrator;
-import org.opencv.ar6.camera_calibration.R;
+import org.artoolkit.ar6.calib_camera.CameraCalibrationActivity;
+import org.artoolkit.ar6.calib_camera.CameraCalibrator;
+import org.artoolkit.ar6.calib_camera.R;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
