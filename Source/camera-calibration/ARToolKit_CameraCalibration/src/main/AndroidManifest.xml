@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.opencv.ar6.camera_calibration">
+    package="org.artoolkit.ar6.camera_calibration">
 
     <supports-screens
         android:anyDensity="true"
@@ -72,8 +72,9 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <activity android:name="org.artoolkit.ar6.camera_calibration.CalibrationDetails"
-            android:screenOrientation="landscape"></activity>
+        <activity
+            android:name="org.artoolkit.ar6.camera_calibration.CalibrationDetails"
+            android:screenOrientation="landscape" />
     </application>
 
 </manifest>
