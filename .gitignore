@@ -16,3 +16,4 @@ Source/camera-calibration/.idea
 Source/camera-calibration/.gradle
 local.properties
 ARToolKit_CameraCalibration.iml
+openCVLibrary310.iml
