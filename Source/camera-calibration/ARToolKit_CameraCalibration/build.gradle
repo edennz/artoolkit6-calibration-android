@@ -6,7 +6,7 @@ android {
     buildToolsVersion "25.0.0"
 
     defaultConfig {
-        applicationId "org.artoolkit.ar6.camera_calibration"
+        applicationId "org.artoolkit.ar6.calib_camera"
         minSdkVersion 15
         targetSdkVersion 22  //For now that needs to be 22 because the OpenCV libs still use CameraAPI 1
 
