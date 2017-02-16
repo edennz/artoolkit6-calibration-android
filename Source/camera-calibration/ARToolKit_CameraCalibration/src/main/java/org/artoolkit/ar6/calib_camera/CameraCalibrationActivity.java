@@ -69,7 +69,7 @@ public class CameraCalibrationActivity extends Activity implements CvCameraViewL
     public static final int CALIB_STATS = 4;
 
     private static final String TAG = "OCVSample::Activity";
-    private static final String ANDROID_CAMERA_CALIBRATION_HELP_URL = "http://artoolkit.org/documentation/doku.php?id=4_Android:android_camera_calibration";
+    private static final String ANDROID_CAMERA_CALIBRATION_HELP_URL = "https://github.com/artoolkit/artoolkit6/wiki/Camera-calibration-Android";
     private static final int CALIBRATION_DETAIL_REQ_CODE = 1;
     public static final String INTENT_EXTRA_CAMERA_CALIBRATOR = "Calibrator";
     public static boolean GUIDE_MODE = false;

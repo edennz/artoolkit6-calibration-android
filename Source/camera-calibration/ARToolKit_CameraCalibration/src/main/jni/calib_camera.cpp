@@ -133,7 +133,7 @@ jobject objectCameraCalibActivity = nullptr;
 // _1 is the escape sequence for a '_' character.
 void wireupJavaMethods(JNIEnv *pEnv, jobject pJobject);
 
-#define JNIFUNCTION_NATIVE(sig) Java_org_artoolkit_ar6_camera_1calibration_CameraCalibrationActivity_##sig
+#define JNIFUNCTION_NATIVE(sig) Java_org_artoolkit_ar6_calib_1camera_CameraCalibrationActivity_##sig
 
 extern "C" {
 JNIEXPORT void JNICALL JNIFUNCTION_NATIVE(nativeSaveParam(JNIEnv *env, jobject type,
