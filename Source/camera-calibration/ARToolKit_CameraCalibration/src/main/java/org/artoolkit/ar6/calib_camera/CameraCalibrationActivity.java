@@ -105,7 +105,7 @@ public class CameraCalibrationActivity extends Activity implements CvCameraViewL
     }
 
     public static native void nativeSaveParam(double[] cameraMatrix, double[] distortionCoefficientsArray,
-                                              int sizeX, int sizeY);
+                                              int sizeX, int sizeY, float average, float min, float max);
 
     public static native boolean nativeInitialize(Context ctx,String calibrationServerURL);
 
@@ -284,7 +284,24 @@ public class CameraCalibrationActivity extends Activity implements CvCameraViewL
         double[] distortionCoefficientsArray = new double[CalibrationResult.DISTORTION_COEFFICIENTS_SIZE];
         distortionCoefficients.get(0, 0, distortionCoefficientsArray);
 
-        CameraCalibrationActivity.nativeSaveParam(cameraMatrixArray, distortionCoefficientsArray, mWidth, mHeight);
+        ArrayList<Float> reprojectionErrorArrayList = mCalibrator.getReprojectionErrorArrayList();
+        float average = 0;
+        float min = Float.MAX_VALUE;
+        float max = Float.MIN_VALUE;
+
+        for (int i = 0; i <= reprojectionErrorArrayList.size() -1; i++) {
+            // turn your data into Entry objects
+            average +=(float) reprojectionErrorArrayList.get(i);
+            if(reprojectionErrorArrayList.get(i) < min){
+                min = reprojectionErrorArrayList.get(i);
+            }
+            if(reprojectionErrorArrayList.get(i) > max){
+                max = reprojectionErrorArrayList.get(i);
+            }
+        }
+        average /= reprojectionErrorArrayList.size();
+
+        CameraCalibrationActivity.nativeSaveParam(cameraMatrixArray, distortionCoefficientsArray, mWidth, mHeight,average, min, max);
     }
 
     public void onCameraViewStarted(int width, int height) {

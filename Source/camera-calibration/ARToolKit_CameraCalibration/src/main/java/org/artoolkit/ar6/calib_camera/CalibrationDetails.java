@@ -104,12 +104,7 @@ public class CalibrationDetails extends Activity implements OnChartValueSelected
         //Retrive the calibrator from the extras. The calibrator is passed when starting the intend
         mCalibrator = (CameraCalibrator) getIntent().getExtras().getSerializable(CameraCalibrationActivity.INTENT_EXTRA_CAMERA_CALIBRATOR);
 
-        Mat reprojectionErrors = mCalibrator.getReprojectionErrors();
-        mReprojectionArray = new ArrayList<>();
-
-        for(int i = 0; i <= mCalibrator.getCornersBufferSize()-1;i++){
-            mReprojectionArray.add((float) reprojectionErrors.get(i,0)[0]);
-        }
+        mReprojectionArray = mCalibrator.getReprojectionErrorArrayList();
     }
 
     @Override

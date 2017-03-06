@@ -137,14 +137,14 @@ void wireupJavaMethods(JNIEnv *pEnv, jobject pJobject);
 
 extern "C" {
 JNIEXPORT void JNICALL JNIFUNCTION_NATIVE(nativeSaveParam(JNIEnv *env, jobject type,
-        jdoubleArray cameraMatrix, jdoubleArray distortionCoefficientsArray_,int sizeX, int sizeY));
+        jdoubleArray cameraMatrix, jdoubleArray distortionCoefficientsArray_,int sizeX, int sizeY, float average, float min, float max));
 JNIEXPORT jboolean JNICALL JNIFUNCTION_NATIVE(nativeInitialize(JNIEnv *env, jobject type,
                       jobject instanceOfAndroidContext, jstring calibrationServerUrl));
 JNIEXPORT jboolean JNICALL JNIFUNCTION_NATIVE(nativeStop(JNIEnv *env, jobject type));
 };
 
 // Save parameters file and index file with info about it, then signal thread that it's ready for upload.
-void saveParam(const ARParam *param, ARdouble err_min, ARdouble err_avg, ARdouble err_max) {
+void saveParam(const ARParam *param, ARdouble err_avg, ARdouble err_min, ARdouble err_max) {
     int i;
     #define SAVEPARAM_PATHNAME_LEN 80
     #define COPY_PARAM_PATHNAME_LEN 80
@@ -549,7 +549,7 @@ JNIEXPORT jboolean JNICALL JNIFUNCTION_NATIVE(nativeInitialize(JNIEnv *env, jobj
 
 JNIEXPORT void JNICALL JNIFUNCTION_NATIVE(nativeSaveParam(JNIEnv *env, jobject type,
         jdoubleArray cameraMatrix_,
-        jdoubleArray distortionCoefficientsArray_, int sizeX, int sizeY)) {
+        jdoubleArray distortionCoefficientsArray_, int sizeX, int sizeY, float average, float min, float max)) {
     jsize camMatLen = env->GetArrayLength(cameraMatrix_);
     jsize distLen = env->GetArrayLength(distortionCoefficientsArray_);
 
@@ -562,7 +562,7 @@ JNIEXPORT void JNICALL JNIFUNCTION_NATIVE(nativeSaveParam(JNIEnv *env, jobject t
     videoWidth = sizeX;
     videoHeight = sizeY;
 
-    LOGD("and with cameraMatrix size: %d and values: ", camMatLen);
+    LOGI("and with cameraMatrix size: %d and values: ", camMatLen);
     for (int i=0;i < camMatLen ;i++) {
         LOGD("%lf ",cameraMatrix[i]);
     }
@@ -583,7 +583,7 @@ JNIEXPORT void JNICALL JNIFUNCTION_NATIVE(nativeSaveParam(JNIEnv *env, jobject t
     }
 
     convParam(dist,sizeX,sizeY,fx,fy,x0,y0,&param);
-    saveParam(&param,0.0,0.0,0.0);
+    saveParam(&param,average,min,max);
 
     env->ReleaseDoubleArrayElements(distortionCoefficientsArray_, distortionCoefficientsArray, JNI_ABORT);
     env->ReleaseDoubleArrayElements(cameraMatrix_, cameraMatrix, JNI_ABORT);

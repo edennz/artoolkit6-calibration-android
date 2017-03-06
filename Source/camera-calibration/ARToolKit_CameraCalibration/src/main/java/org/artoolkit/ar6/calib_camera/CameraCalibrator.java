@@ -243,4 +243,13 @@ public class CameraCalibrator implements Serializable{
     public final MatOfPoint2f getCorners() {
         return mCorners;
     }
+
+    public ArrayList<Float> getReprojectionErrorArrayList(){
+        ArrayList<Float> reprojectionArray = new ArrayList<>();
+
+        for(int i = 0; i <= this.getCornersBufferSize()-1;i++){
+            reprojectionArray.add((float) mReprojectionErrors.get(i,0)[0]);
+        }
+        return reprojectionArray;
+    }
 }

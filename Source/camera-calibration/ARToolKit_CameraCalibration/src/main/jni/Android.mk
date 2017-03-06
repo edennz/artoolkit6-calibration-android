@@ -99,7 +99,7 @@ ifeq ($(APP_OPTIM),debug)
 endif
 
 LOCAL_C_INCLUDES += $(ARTOOLKIT_DIR)/include $(ARTOOLKIT_DIR)/include/AR6
-LOCAL_C_INCLUDES += $(CURL_DIR)/include
+LOCAL_C_INCLUDES += $(CURL_DIR)/include/curl
 LOCAL_LDLIBS += -llog -lGLESv1_CM -lz
 LOCAL_WHOLE_STATIC_LIBRARIES += AR
 #LOCAL_STATIC_LIBRARIES += opencv_calib3d opencv_features2d opencv_imgproc opencv_flann opencv_core eden jpeg argsub_es armulti arosg aricp util cpufeatures
