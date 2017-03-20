@@ -139,7 +139,7 @@ extern "C" {
 JNIEXPORT void JNICALL JNIFUNCTION_NATIVE(nativeSaveParam(JNIEnv *env, jobject type,
         jdoubleArray cameraMatrix, jdoubleArray distortionCoefficientsArray_,int sizeX, int sizeY, float average, float min, float max));
 JNIEXPORT jboolean JNICALL JNIFUNCTION_NATIVE(nativeInitialize(JNIEnv *env, jobject type,
-                      jobject instanceOfAndroidContext, jstring calibrationServerUrl));
+                      jobject instanceOfAndroidContext, jstring calibrationServerUrl,jint cameraIndex, jboolean cameraIsFrontFacing));
 JNIEXPORT jboolean JNICALL JNIFUNCTION_NATIVE(nativeStop(JNIEnv *env, jobject type));
 };
 
@@ -527,11 +527,14 @@ ARdouble getSizeFactor(ARdouble dist_factor[], int xsize, int ysize, int dist_fu
 }
 
 JNIEXPORT jboolean JNICALL JNIFUNCTION_NATIVE(nativeInitialize(JNIEnv *env, jobject type,
-        jobject instanceOfAndroidContext,jstring calibrationServerUrl)){
+        jobject instanceOfAndroidContext,jstring calibrationServerUrl, jint cameraIndex, jboolean cameraIsFrontFacing)){
 
     const char *calibServerUrl = env->GetStringUTFChars(calibrationServerUrl, 0);
     LOGD("Entered nativeInitialize with instanceOfAndroidContext: %p and CalibServerUrl: %s",instanceOfAndroidContext,calibServerUrl);
     arUtilChangeToResourcesDirectory(AR_UTIL_RESOURCES_DIRECTORY_BEHAVIOR_BEST, NULL, instanceOfAndroidContext);
+
+    gCameraIndex = cameraIndex;
+    gCameraIsFrontFacing = cameraIsFrontFacing;
 
     //Save instance to JVM
     env->GetJavaVM(&jvm);
