@@ -47,7 +47,6 @@
 #include <sys/stat.h> // struct stat, stat()
 #include <pthread.h>
 
-#include <AR/ar.h>
 #include <AR6/ARUtil/thread_sub.h>
 
 #define  LOG_TAG    "fileUploader"

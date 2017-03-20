@@ -10,8 +10,14 @@ android {
         minSdkVersion 15
         targetSdkVersion 22  //For now that needs to be 22 because the OpenCV libs still use CameraAPI 1
 
-        versionCode 602
+        versionCode 603
         versionName "6.0"
+
+        ndk {
+            // Specifies the ABI configurations of your native
+            // libraries Gradle should build and package with your APK.
+            abiFilters 'armeabi', 'armeabi-v7a', 'x86', 'mips', 'mips64'
+        }
     }
 
     buildTypes {
@@ -20,6 +26,8 @@ android {
             proguardFiles.add(file('proguard-rules.txt'))
         }
     }
+
+
 
     externalNativeBuild {
         ndkBuild {
