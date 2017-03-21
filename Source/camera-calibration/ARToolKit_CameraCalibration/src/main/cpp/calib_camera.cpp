@@ -109,7 +109,7 @@ static int videoWidth = 0;                                          ///< Width o
 static int videoHeight = 0;                                         ///< Height of the video frame in pixels.
 static int gCameraIndex = 0;
 static bool gCameraIsFrontFacing = false;
-const char* gHashedToken;
+char gHashedToken[32];
 
 JavaVM *jvm = NULL;
 
@@ -278,6 +278,16 @@ void saveParam(const ARParam *param, ARdouble err_avg, ARdouble err_min, ARdoubl
             fprintf(fp, "err_avg,%s\n", err_avg_ascii);
             fprintf(fp, "err_max,%s\n", err_max_ascii);
         }
+
+        // Write the token.
+        if (goodWrite) {
+            LOGD("Writing Token hash: %s", gHashedToken);
+            fprintf(fp, "ss,%s\n", gHashedToken);
+        }
+
+        // Done writing index file.
+        fclose(fp);
+
         LOGD("camera_para.dat has been written");
 
         char timestamp4Calib[14] = "";
@@ -292,15 +302,6 @@ void saveParam(const ARParam *param, ARdouble err_avg, ARdouble err_min, ARdoubl
                 LOGE("Error writing copy of camera_para.dat file.\n");
             }
         }
-
-        // Write the token.
-        if (goodWrite) {
-            LOGD("Writing Token hash: %s", gHashedToken);
-            fprintf(fp, "ss,%s\n", gHashedToken);
-        }
-
-        // Done writing index file.
-        fclose(fp);
 
         if (goodWrite) {
             // Rename the file with QUEUE_INDEX_FILE_EXTENSION file extension so it's picked up in uploader.
@@ -529,7 +530,7 @@ JNIEXPORT jboolean JNICALL JNIFUNCTION_NATIVE(nativeInitialize(JNIEnv *env, jobj
 
     gCameraIndex = cameraIndex;
     gCameraIsFrontFacing = cameraIsFrontFacing;
-    gHashedToken = hashedToken;
+    strcpy(gHashedToken,hashedToken);
 
     //Save instance to JVM
     env->GetJavaVM(&jvm);
