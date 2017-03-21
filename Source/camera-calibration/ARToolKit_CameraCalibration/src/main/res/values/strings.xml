@@ -71,7 +71,7 @@
     <string name="error_no_calibration">No calibration files to share. Run a calibration first.</string>
     <string name="text_calibrationFinished">Calibration finished. Now in preview mode.</string>
     <string name="text_frameRejected">Frame rejected as the angle from camera to pattern is to steep. Angle > 40˚</string>
-    <string name="prefCategory_title_calibrationServer">Calibration Server URL</string>
+    <string name="prefCategory_title_server">Server settings</string>
     <string name="pref_calibrationServerDefault">http://192.168.42:8080/app/calib_camera/upload.php</string>
     <string name="calib_stats">Calibration statistics</string>
     <string name="string_averageReproErr">- Average reprojection error</string>
@@ -80,6 +80,9 @@
     <string name="error_values_removed">Values removed. Recalibration starts when navigating back to main screen.</string>
     <string name="deleteCalibrationFrame">Delete this frame from calibration</string>
     <string name="camera_lense_content_description">camera lense taking a picture</string>
+    <string name="prefCategory_title_server_url">Server URL</string>
+    <string name="prefCategory_title_server_token">Calibration server authentication token</string>
+    <string name="pref_calibrationServerTokenDefault">ARToolKit6.Rocks</string>
 
     <plurals name="numberOfPicturesTaken">
         <!--
