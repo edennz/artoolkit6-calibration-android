@@ -46,6 +46,7 @@
 #include <sys/param.h> // MAXPATHLEN
 #include <sys/stat.h> // struct stat, stat()
 #include <pthread.h>
+#include <errno.h>
 
 #include <AR6/ARUtil/thread_sub.h>
 
@@ -57,6 +58,7 @@ jmethodID setUploadStatusText;
 jmethodID addUploadStatusText;
 static jmethodID uploadFinished;
 static jclass classCameraCalibrationActivity;
+
 
 
 struct _FILE_UPLOAD_HANDLE {
@@ -105,7 +107,8 @@ static bool getNextFileInQueueWithExtension(const char *queueDir, const char *ex
     if (!buf || !ext) return (false);
 
     if (!(dirp = opendir(queueDir))) {
-        ARLOGe("Error opening upload queue dir '%s'.\n", queueDir);
+        //This error is expected when the app runs for the first time as the directory has not been created yet.
+        ARLOGe("Error opening upload queue dir '%s' error: %d.\n", queueDir, errno);
         return (false);
     }
 

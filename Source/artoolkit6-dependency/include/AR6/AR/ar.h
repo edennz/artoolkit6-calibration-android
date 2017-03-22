@@ -101,6 +101,8 @@ extern "C" {
         the severity of the log message. (The severities are defined in &lt;AR6/AR/config.h&gt;.)
         Setting this global allows for filtering of log messages. All log messages lower than
         the set level will not be logged by arLog().
+        Note that debug log messages created using the ARLOGd() macro will be logged only in
+        debug builds, irrespective of the log level.
     @see arLog
 */
 extern int arLogLevel;

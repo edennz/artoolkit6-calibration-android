@@ -47,6 +47,12 @@
 /**
  * An ARView provides a rendering target for visual overlay. Typically, this is used in
  * video see-through augmented reality.
+ *
+ * All non-const functions in this class REQUIRE an rebderubg context to be active at the
+ * time the function is called. E.g. on platforms supporting OpenGL, a valid OpenGL context
+ * must be initialised and active before calling.
+ * In multi-threaded applications, non-const functions in this class should be called from
+ * a rendering thread.
  */
 class ARView {
 
@@ -97,7 +103,7 @@ public:
     ARView::Size contextSize() const;
     void setContextSize(const Size size);
     
-    void getViewport(int32_t viewport[4]);
+    void getViewport(int32_t viewport[4]) const;
     
     void draw(ARVideoSource* vs);
     

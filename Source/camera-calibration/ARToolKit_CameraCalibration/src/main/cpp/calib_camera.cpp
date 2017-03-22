@@ -521,7 +521,7 @@ ARdouble getSizeFactor(ARdouble dist_factor[], int xsize, int ysize, int dist_fu
 JNIEXPORT jboolean JNICALL JNIFUNCTION_NATIVE(nativeInitialize(JNIEnv *env, jobject type,
         jobject instanceOfAndroidContext,jstring calibrationServerUrl, jint cameraIndex, jboolean cameraIsFrontFacing, jstring token)){
 
-    arLogLevel = AR_LOG_LEVEL_DEBUG;
+    //arLogLevel = AR_LOG_LEVEL_DEBUG;
 
     const char *calibServerUrl = env->GetStringUTFChars(calibrationServerUrl, 0);
     const char *hashedToken = env->GetStringUTFChars(token,0);

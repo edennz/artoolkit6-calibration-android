@@ -66,6 +66,8 @@ EXPORT_API void arwRegisterLogCallback(PFN_LOGCALLBACK callback);
  * the severity of the log message. (The severities are defined in %lt;AR6/AR/config.h&gt;.)
  * Setting this allows for filtering of log messages. All log messages lower than
  * the set level will not be logged.
+ * Note that debug log messages created using the native ARLOGd() macro will be logged only in
+ * debug builds, irrespective of the log level.
  * @param logLevel The log level below which log messages should be ignored.
  */
 EXPORT_API void arwSetLogLevel(const int logLevel);
