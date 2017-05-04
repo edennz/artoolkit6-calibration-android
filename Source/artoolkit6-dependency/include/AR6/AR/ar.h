@@ -101,6 +101,8 @@ extern "C" {
         the severity of the log message. (The severities are defined in &lt;AR6/AR/config.h&gt;.)
         Setting this global allows for filtering of log messages. All log messages lower than
         the set level will not be logged by arLog().
+        Note that debug log messages created using the ARLOGd() macro will be logged only in
+        debug builds, irrespective of the log level.
     @see arLog
 */
 extern int arLogLevel;
@@ -203,6 +205,14 @@ extern "C" {
 /* --------------------------------------------------*/
 
 /*!
+    @brief A structure to hold a timestamp in seconds and microseconds, with arbitrary epoch.
+ */
+typedef struct {
+    uint64_t sec;
+    uint32_t usec;
+} AR2VideoTimestampT;
+
+/*!
     @brief A structure which carries information about a video frame retrieved by the video library.
     @see arVideoGetPixelFormat arVideoGetPixelFormat
  */
@@ -212,8 +222,7 @@ typedef struct {
     unsigned int        bufPlaneCount;  ///< For multi-planar video frames, this is the number of frame planes. For single-plane formats, this will be 0.
     ARUint8            *buffLuma;       ///< A pointer to a luminance-only version of the image. For luminance-only video formats this pointer is a copy of buff. For multi-planar formats which include a luminance-only plane, this pointer is a copy of one of the bufPlanes[] pointers. In all other cases, this pointer points to a buffer containing a copy of the video frame converted to luminance only.
     int                 fillFlag;       ///< Set non-zero when buff is valid.
-    ARUint32            time_sec;       ///< Seconds portion of the time at which buff was filled. Epoch is OS-specific.
-    ARUint32            time_usec;      ///< Microseconds portion of the time at which buff was filled. Epoch is OS-specific.
+    AR2VideoTimestampT  time;           ///< Time at which buff was filled.
 } AR2VideoBufferT;
 
 /*!
@@ -618,7 +627,6 @@ int arGetLabelingThresh( ARHandle *handle, int *thresh );
 
 /*!
     @brief   Set the labeling threshold mode (auto/manual).
-    @details
     @param      handle An ARHandle referring to the current AR tracker
         to be queried for its labeling threshold mode.
     @param		mode An integer specifying the mode. One of:
@@ -634,7 +642,6 @@ int arSetLabelingThreshMode(ARHandle *handle, const AR_LABELING_THRESH_MODE mode
 
 /*!
     @brief   Get the labeling threshold mode (auto/manual).
-    @details
     @param      handle An ARHandle referring to the current AR tracker
         to be queried for its labeling threshold value.
     @param		mode_p Pointer into which will be placed the
@@ -924,8 +931,6 @@ int arDetectMarker(ARHandle *arHandle, AR2VideoBufferT *frame);
 
 /*!
     @brief   Get the number of markers detected in a video frame.
-    @details
-
     @result     The number of detected markers in the most recent image passed to arDetectMarker.
         Note that this is actually a count, not an index. A better name for this function would be
         arGetDetectedMarkerCount, but the current name lives on for historical reasons.
@@ -938,7 +943,6 @@ int arGetMarkerNum( ARHandle *arHandle );
 
 /*!
     @brief   Get information on the markers detected in a video frame.
-    @details
     @result     An array (of length arGetMarkerNum(arHandle)) of ARMarkerInfo structs.
         A better name for this function would be arGetDetectedMarkerInfo, but the current name lives
         on for historical reasons.
@@ -1185,7 +1189,6 @@ int            arPattGetImage( int imageProcMode, int pattDetectMode, int patt_s
 
 /*!
     @brief   Match the interior of a detected square against known patterns.
-    @details
     @param      pattHandle Handle contained details of known patterns, i.e. loaded templates, or valid barcode IDs.
     @param      imageProcMode See discussion of arSetImageProcMode().
     @param      pattDetectMode See discussion of arSetPatternDetectionMode().
@@ -1214,7 +1217,6 @@ int            arPattGetID2( ARPattHandle *pattHandle, int imageProcMode, int pa
 
 /*!
     @brief   Match the interior of a detected square against known patterns with variable border width.
-    @details
     @param      pattHandle Handle contained details of known patterns, i.e. loaded templates, or valid barcode IDs.
     @param      imageProcMode See discussion of arSetImageProcMode().
     @param      pattDetectMode See discussion of arSetPatternDetectionMode().
@@ -1244,7 +1246,6 @@ int arPattGetIDGlobal( ARPattHandle *pattHandle, int imageProcMode, int pattDete
 
 /*!
     @brief   Extract the image (i.e. locate and unwarp) of the pattern-space portion of a detected square.
-    @details
     @param      imageProcMode See discussion of arSetImageProcMode().
     @param      pattDetectMode See discussion of arSetPatternDetectionMode().
     @param      patt_size The number of horizontal and vertical units to subdivide the pattern-space into.
@@ -1394,7 +1395,6 @@ ARdouble         arGetTransMatSquareCont( AR3DHandle *handle, ARMarkerInfo *mark
     @brief   (description)
     @details (description)
     @param      handle (description)
-    @param      handle (description)
     @param      initConv (description)
     @param      pos2d (description)
     @param      pos3d (description)
@@ -1542,21 +1542,6 @@ int            arUtilMat2QuatPos( const ARdouble m[3][4], ARdouble q[4], ARdoubl
 int            arUtilQuatPos2Mat( const ARdouble q[4], const ARdouble p[3], ARdouble m[3][4] );
 int            arUtilQuatNorm(ARdouble q[4]);
 
-double         arUtilTimer(void);
-void           arUtilTimerReset(void);
-
-#ifndef _WINRT
-/*!
-    @brief   Relinquish CPU to the system for specified number of milliseconds.
-    @details
-        This function calls the native system-provided sleep routine to relinquish
-        CPU control to the system for the specified time.
-    @param      msec Sleep time in milliseconds (thousandths of a second).
-    @since Not available on Windows Runtime (WinRT).
- */
-void           arUtilSleep( int msec );
-#endif // !_WINRT
-
 int            arUtilReplaceExt( char *filename, int n, char *ext );
 int            arUtilRemoveExt ( char *filename );
 int            arUtilDivideExt ( const char *filename, char *s1, char *s2 );
@@ -1593,8 +1578,6 @@ int            arUtilGetPixelSize( const AR_PIXEL_FORMAT arPixelFormat );
         AR_PIXEL_FORMAT, e.g. "AR_PIXEL_FORMAT_RGB".
 */
 const char *arUtilGetPixelFormatName(const AR_PIXEL_FORMAT arPixelFormat);
-
-char          *arUtilGetMachineType(void);
 
 /*
     @brief Get the filename portion of a full pathname.
@@ -1670,33 +1653,55 @@ char *arUtilGetDirectoryNameFromPath(char *dir, const char *path, const size_t n
 char *arUtilGetFileURI(const char *path);
 
 /*!
-    @typedef
     @brief Options for controlling the behavior of arUtilGetResourcesDirectoryPath and arUtilChangeToResourcesDirectory.
-    @constant AR_UTIL_RESOURCES_DIRECTORY_BEHAVIOR_BEST          Use a platform-dependent recommended-best option.
-        Note the this behavior is subject to change in future versions of ARToolKit.
-        At present, on Mac OS X and iOS, this will change to the Apple-provided resources directory inside the application bundle.
-        At present, on other platforms, this will change to the same directory as the executable.
-    @constant AR_UTIL_RESOURCES_DIRECTORY_BEHAVIOR_USE_CWD Use the current working directory. For arUtilChangeToResourcesDirectory, this will leave the current working directory unchanged.
-    @constant AR_UTIL_RESOURCES_DIRECTORY_BEHAVIOR_USE_SUPPLIED_PATH Change to the working directory specified.
-    @constant AR_UTIL_RESOURCES_DIRECTORY_BEHAVIOR_USE_EXECUTABLE_DIR Change to the same directory as the executable.
-		On OS X and iOS, this corresponds to the directory of the binary executable inside the app bundle, not ythe directory containing the app bundle.
-    @constant AR_UTIL_RESOURCES_DIRECTORY_BEHAVIOR_USE_USER_ROOT Change to the root of the implementation-dependent user-writable root.
-        On OS X and Linux, this is equivalent to the "~" user home. On Android, this is the root of the "external" storage (e.g. an SD card).
-        On Windows, this is the user home directory, typically "C:\Documents and Settings\USERNAME".
-    @constant AR_UTIL_RESOURCES_DIRECTORY_BEHAVIOR_USE_APP_CACHE_DIR Change to a writable cache directory, i.e. a directory which is not normally shown to the user, in which files which may be subject to deletion by the system or the user.
-        On Android, change to the applications's (internal) cache directory, and a valid instance of Android/Context must be passed in the instanceofAndroidContext parameter.
-	@constant AR_UTIL_RESOURCES_DIRECTORY_BEHAVIOR_USE_APP_DATA_DIR Change to a writable data directory, i.e. a directory which is not normally shown to the user, but in which files are retained permanently.
 	@see arUtilGetResourcesDirectoryPath
 	@see arUtilChangeToResourcesDirectory
  */
 typedef enum {
+    /*!
+        Use a platform-dependent recommended-best option.
+        Note the this behavior is subject to change in future versions of ARToolKit.
+        At present, on Mac OS X and iOS, this will change to the Apple-provided resources directory inside the application bundle.
+        At present, on other platforms, this will change to the same directory as the executable.
+     */
     AR_UTIL_RESOURCES_DIRECTORY_BEHAVIOR_BEST = 0,
+    /*!
+        Use the current working directory. For arUtilChangeToResourcesDirectory, this will leave the current working directory unchanged.
+     */
     AR_UTIL_RESOURCES_DIRECTORY_BEHAVIOR_USE_CWD,
+    /*!
+        Change to the working directory specified.
+     */
     AR_UTIL_RESOURCES_DIRECTORY_BEHAVIOR_USE_SUPPLIED_PATH,
+    /*!
+        Change to the same directory as the executable.
+        On OS X and iOS, this corresponds to the directory of the binary executable inside the app bundle, not ythe directory containing the app bundle.
+     */
     AR_UTIL_RESOURCES_DIRECTORY_BEHAVIOR_USE_EXECUTABLE_DIR,
+    /*!
+        Change to the resources directory.
+        On macOS and iOS, this is the Resources directory inside the application bundle.
+        On Linux, this is a directory formed by taking the path to the directory containing
+        the executable, appending "/../share" to it, and then pointing to a subdirectory under
+        this path with the same name as the executable. Note that the existence of this path
+        is not guaranteed. E.g. for an executable at path '/usr/bin/myapp' the returned path
+        will be '/usr/bin/../share/myapp'.
+     */
     AR_UTIL_RESOURCES_DIRECTORY_BEHAVIOR_USE_BUNDLE_RESOURCES_DIR,
+    /*!
+        Change to the root of the implementation-dependent user-writable root.
+        On OS X and Linux, this is equivalent to the "~" user home. On Android, this is the root of the "external" storage (e.g. an SD card).
+        On Windows, this is the user home directory, typically "C:\Documents and Settings\USERNAME".
+     */
     AR_UTIL_RESOURCES_DIRECTORY_BEHAVIOR_USE_USER_ROOT,
+    /*!
+        Change to a writable cache directory, i.e. a directory which is not normally shown to the user, in which files which may be subject to deletion by the system or the user.
+        On Android, change to the applications's (internal) cache directory, and a valid instance of Android/Context must be passed in the instanceofAndroidContext parameter.
+     */
     AR_UTIL_RESOURCES_DIRECTORY_BEHAVIOR_USE_APP_CACHE_DIR,
+    /*!
+        Change to a writable data directory, i.e. a directory which is not normally shown to the user, but in which files are retained permanently.
+     */
 	AR_UTIL_RESOURCES_DIRECTORY_BEHAVIOR_USE_APP_DATA_DIR
 } AR_UTIL_RESOURCES_DIRECTORY_BEHAVIOR;
 
@@ -1719,6 +1724,27 @@ typedef enum {
 char *arUtilGetResourcesDirectoryPath(AR_UTIL_RESOURCES_DIRECTORY_BEHAVIOR behavior, jobject instanceOfAndroidContext);
 #else
 char *arUtilGetResourcesDirectoryPath(AR_UTIL_RESOURCES_DIRECTORY_BEHAVIOR behavior);
+#endif
+
+/*!
+    @brief   Get the path to the resources directory using the specified behavior, creating the path if it doesn't already exist.
+    @details
+    	ARToolKit uses relative paths to locate several types of resources, including
+    	camera parameter files, pattern files, multimarker files and others.
+    	This function provides the convenience of finding an appropriate value for your
+        application.
+
+        On Android only, the function has an optional parameter 'instanceOfAndroidContext'.
+        If behavior is AR_UTIL_RESOURCES_DIRECTORY_BEHAVIOR_USE_APP_CACHE_DIR, this
+        parameter must be an instance of a class derived from android/content/Context.
+        In all other cases, pass NULL for this parameter.
+    @param behavior See AR_UTIL_RESOURCES_DIRECTORY_BEHAVIOR type for allowed values.
+    @result NULL in the case of error, or the path otherwise. Must be free()d by the caller.
+ */
+#ifdef ANDROID
+char *arUtilGetAndCreateResourcesDirectoryPath(AR_UTIL_RESOURCES_DIRECTORY_BEHAVIOR behavior, jobject instanceOfAndroidContext);
+#else
+char *arUtilGetAndCreateResourcesDirectoryPath(AR_UTIL_RESOURCES_DIRECTORY_BEHAVIOR behavior);
 #endif
 
 #ifndef _WINRT

@@ -63,16 +63,19 @@ extern "C" {
 #  endif
 #endif
 
+/*!
+    @brief Structure holding settings for an instance of the image-processing pipeline.
+ */
 struct _ARImageProcInfo {
-    unsigned char *__restrict image2; // Extra buffer, allocated as required.
-    int imageX; // Width of image buffer.
-    int imageY; // Height of image buffer.
-    unsigned long histBins[256]; // Luminance histogram.
-    unsigned long cdfBins[256]; // Luminance cumulative density function.
-    unsigned char min; // Minimum luminance.
-    unsigned char max; // Maximum luminance.
+    unsigned char *__restrict image2;   ///< Extra buffer, allocated as required.
+    int imageX;                         ///< Width of image buffer.
+    int imageY;                         ///< Height of image buffer.
+    unsigned long histBins[256];        ///< Luminance histogram.
+    unsigned long cdfBins[256];         ///< Luminance cumulative density function.
+    unsigned char min;                  ///< Minimum luminance.
+    unsigned char max;                  ///< Maximum luminance.
 #if AR_IMAGEPROC_USE_VIMAGE
-    void *tempBuffer;
+    void *tempBuffer;                   ///< Extra buffer when using macOS/iOS vImage framework.
 #endif
 };
 typedef struct _ARImageProcInfo ARImageProcInfo;
@@ -107,14 +110,13 @@ ARImageProcInfo *arImageProcInit(const int xsize, const int ysize);
     @details
         When processing is complete, the ARImageProcInfo structure should
         be disposed of by calling this function.
-    @param ipi
+    @param ipi ARImageProcInfo structure to be disposed of, as created by arImageProcInit.
     @see arImageProcInit
  */
 void arImageProcFinal(ARImageProcInfo *ipi);
 
 /*!
     @brief Calculate luminance histogram.
-    @details 
     @param ipi ARImageProcInfo structure describing the format of the image
         to be processed, as created by arImageProcInit.
  
@@ -144,7 +146,6 @@ unsigned char *arImageProcGetHistImage(ARImageProcInfo *ipi);
 
 /*!
     @brief Calculate image histogram and cumulative density function.
-    @details 
     @param ipi ARImageProcInfo structure describing the format of the image
         to be processed, as created by arImageProcInit.
     @result 0 in case of success, or a value less than 0 in case of error.
@@ -153,7 +154,6 @@ int arImageProcLumaHistAndCDF(ARImageProcInfo *ipi, const ARUint8 *__restrict da
 
 /*!
     @brief Calculate image histogram, cumulative density function, and luminance value at a given histogram percentile.
-    @details 
     @param ipi ARImageProcInfo structure describing the format of the image
         to be processed, as created by arImageProcInit.
     @result 0 in case of success, or a value less than 0 in case of error.
@@ -162,7 +162,6 @@ int arImageProcLumaHistAndCDFAndPercentile(ARImageProcInfo *ipi, const ARUint8 *
 
 /*!
     @brief Calculate image histogram, cumulative density function, and median luminance value.
-    @details 
     @param ipi ARImageProcInfo structure describing the format of the image
         to be processed, as created by arImageProcInit.
     @result 0 in case of success, or a value less than 0 in case of error.
@@ -173,7 +172,6 @@ int arImageProcLumaHistAndCDFAndMedian(ARImageProcInfo *ipi, const ARUint8 *__re
     @brief Calculate image histogram, and binarize image using Otsu's method for foreground/background separation.
  
         See http://en.wikipedia.org/wiki/Otsu's_method fore more information.
-    @details 
     @param ipi ARImageProcInfo structure describing the format of the image
         to be processed, as created by arImageProcInit.
     @result 0 in case of success, or a value less than 0 in case of error.
@@ -195,7 +193,6 @@ int arImageProcLumaHistAndBoxFilterWithBias(ARImageProcInfo *ipi, const ARUint8 
 
 /*!
     @brief Calculate image histogram, cumulative density function, and minimum and maximum luminance values.
-    @details 
     @param ipi ARImageProcInfo structure describing the format of the image
         to be processed, as created by arImageProcInit.
     @result 0 in case of success, or a value less than 0 in case of error.

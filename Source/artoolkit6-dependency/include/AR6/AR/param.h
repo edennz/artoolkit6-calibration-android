@@ -62,32 +62,27 @@ extern "C" {
     @details
 */
 /*!
-    @defined 
     @brief   Default version for functions accepting a "distortion function version" parameter.
     @details See function arParamObserv2Ideal() for discussion.
 */
 #define AR_DIST_FUNCTION_VERSION_DEFAULT 4
 /*!
-    @defined 
     @brief   Maximum version allowable for functions accepting a "distortion function version" parameter.
     @details See function arParamObserv2Ideal() for discussion.
 */
 #define AR_DIST_FUNCTION_VERSION_MAX 4
 /*!
-    @def AR_DIST_FACTOR_NUM_MAX
     @brief   Maximum number of values in a distortion factor array.
     @details See function arParamObserv2Ideal() for discussion.
 */
 #define AR_DIST_FACTOR_NUM_MAX 9
 /*!
-    @def
     @brief   Default padding added around a lookup-table based camera parameter.
     @details See function arParamLTCreate() for discussion.
 */
 #define   AR_PARAM_LT_DEFAULT_OFFSET  15
 
 /*!
-    @typedef 
     @brief   Structure holding camera parameters, including image size, projection matrix and lens distortion parameters.
     @details
         ARToolKit's tracking depends on accurate knowledge of the properties of the
@@ -96,39 +91,38 @@ extern "C" {
         throughout the entire ARToolKit pipeline, including knowing the size of images
         being returned by the video library, marker detection and pose estimation,
         and warping of camera images for video-see-through registration.
-    @param      xsize The width in pixels of images returned by arVideoGetImage() for the camera.
-    @param      ysize The height in pixels of images returned by arVideoGetImage() for the camera.
-    @param      mat The projection matrix for the calibrated camera parameters. This can be
-        converted to an OpenGL projection matrix by the function arglCameraFrustumRHf().
-    @param      dist_factor See function arParamObserv2Ideal() for discussion.
-    @param      dist_function_version See function arParamObserv2Ideal() for discussion.
     @see    arParamClear
     @see    arParamLoad
     @see    arParamSave
  */
 typedef struct {
-    int      xsize;
-    int      ysize;
-    ARdouble mat[3][4];
-    ARdouble dist_factor[AR_DIST_FACTOR_NUM_MAX];
-    int      dist_function_version; // Must be last field in structure (as will not be written to disk).
+    int      xsize;                 ///< The width in pixels of images returned by arVideoGetImage() for the camera.
+    int      ysize;                 ///< The height in pixels of images returned by arVideoGetImage() for the camera.
+    ARdouble mat[3][4];             ///< The projection matrix for the calibrated camera parameters. This can be converted to an OpenGL projection matrix by the function arglCameraFrustumRHf().
+    ARdouble dist_factor[AR_DIST_FACTOR_NUM_MAX]; ///< See function arParamObserv2Ideal() for discussion.
+    int      dist_function_version; ///< See function arParamObserv2Ideal() for discussion. Must be last field in structure (as will not be written to disk).
 } ARParam;
 
-// Constant array with parameters applicable to each version
-// of the camera parameter distortion function.
 typedef struct {
 	int dist_factor_num;
 	int ARParam_size;
 } arParamVersionInfo_t;
+/*!
+    @brief   Constant array with parameters applicable to each version of the camera parameter distortion function.
+ */
 extern const arParamVersionInfo_t arParamVersionInfo[AR_DIST_FUNCTION_VERSION_MAX];
 
+/*!
+    @brief   Structure holding camera parameters, in lookup table form; floating point version.
+    @see ARParamLT
+ */
 typedef struct {
-    float   *i2o;
-    float   *o2i;
-    int      xsize;
-    int      ysize;
-    int      xOff;
-    int      yOff;
+    float   *i2o;       ///< Ideal-to-observed; for the location in the array corresponding to the idealised location, gives the location in the observed image.
+    float   *o2i;       ///< Observed-to-ideal; for the location in the array corresponding to the observed location, gives the location in the idealised image.
+    int      xsize;     ///< The number of pixels in the array's x dimension, including the offset areas on the left and right sides, i.e. ARParam.xsize + xOff*2.
+    int      ysize;     ///< The number of pixels in the array's x dimension, including the offset areas on the top and bottom.xsize, i.e. ARParam.ysize + yOff*2.
+    int      xOff;      ///< The number of pixels from the left edge of the array to column zero of the input.
+    int      yOff;      ///< The number of pixels from the top edge of the array to row zero of the input.
 } ARParamLTf;
     
 //typedef struct {
@@ -141,7 +135,6 @@ typedef struct {
 //} ARParamLTi;
 
 /*!
-    @typedef 
     @brief   Structure holding camera parameters, in lookup table form.
     @details
         ARToolKit's tracking depends on accurate knowledge of the properties of the
@@ -153,12 +146,10 @@ typedef struct {
 
         This version of the structure contains a pre-calculated lookup table of
         values covering the camera image width and height, plus a padded border.
-    @param      param A copy of original ARParam from which the lookup table was calculated.
-    @param      paramLTf The lookup table.
 */
 typedef struct {
-    ARParam      param;
-    ARParamLTf   paramLTf;
+    ARParam      param;         ///< A copy of original ARParam from which the lookup table was calculated.
+    ARParamLTf   paramLTf;      ///< The lookup table.
     //ARParamLTi   paramLTi;
 } ARParamLT;
 
@@ -184,6 +175,21 @@ int    arParamClear( ARParam *param, int xsize, int ysize, int dist_function_ver
 
 int    arParamDistFactorClear( ARdouble dist_factor[AR_DIST_FACTOR_NUM_MAX], int xsize, int ysize, int dist_function_version );
 
+/*!
+    @brief Create a camera parameter structure representing an idealised lens with specified field-of-view.
+    @details
+        This function creates a camera parameter structure representing an idealised lens,
+        that is, a lens with a symmetrical perspective projection and no distortion.
+        This idealised lens is useful in cases where you wish to match the lens model
+        of an OpenGL camera with the same window dimensions.
+    @param param Pointer to an ARParam structure which will be filled out with
+        the resulting camera parameters.
+    @param xsize The horizontal dimension of the image.
+    @param ysize The vertical dimension of the image.
+    @param FOVy Field-of-view in the vertical (Y) dimension, in radians. If you know
+        only the value in degrees, pass that value multiplied by (M_PI/180.0f).
+    @result 0 if the function completed successfully, or -1 in case of error.
+ */
 int    arParamClearWithFOVy(ARParam *param, int xsize, int ysize, ARdouble FOVy);
 
 int    arParamChangeSize( ARParam *source, int xsize, int ysize, ARParam *newparam );
@@ -359,7 +365,6 @@ ARParamLT  *arParamLTCreate( ARParam *param, int offset );
 
 /*!
     @brief Dispose of a memory allocated to a lookup-table camera parameter.
-    @details
     @param paramLT_p Pointer to a pointer to the paramLT structure to be disposed of.
         On return, the location pointed to will be set to NULL.
     @result -1 if an error occurred, or 0 in the case of no error.

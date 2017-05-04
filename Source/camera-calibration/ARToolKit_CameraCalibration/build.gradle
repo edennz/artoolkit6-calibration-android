@@ -18,6 +18,13 @@ android {
             // libraries Gradle should build and package with your APK.
             abiFilters 'armeabi', 'armeabi-v7a', 'x86', 'mips', 'mips64'
         }
+        externalNativeBuild {
+            cmake {
+                // Use the following syntax when passing arguments to variables:
+                // arguments "-DVAR_NAME=VALUE"
+                arguments "-DANDROID_CPP_FEATURES=rtti exceptions"
+            }
+        }
     }
 
     buildTypes {
@@ -27,11 +34,18 @@ android {
         }
     }
 
-
+    sourceSets {
+        main {
+            // let gradle pack the shared library into apk
+            jniLibs.srcDirs = ['../../artoolkit6-dependency/']
+        }
+    }
 
     externalNativeBuild {
-        ndkBuild {
-            path 'src/main/jni/Android.mk'
+        // Encapsulates your CMake build configurations.
+        cmake {
+            // Provides a relative path to your CMake build script.
+            path "CMakeLists.txt"
         }
     }
 }

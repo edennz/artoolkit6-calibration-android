@@ -57,33 +57,33 @@
     The MAJOR version number defines non-backwards compatible
     changes in the ARToolKit API. Range: [0-99].
  */
-#define AR_HEADER_VERSION_MAJOR		6
+#define AR_HEADER_VERSION_MAJOR     6
 
 /*@
     The MINOR version number defines additions to the ARToolKit
     API, or (occsasionally) other significant backwards-compatible
     changes in runtime functionality. Range: [0-99].
  */
-#define AR_HEADER_VERSION_MINOR		0
+#define AR_HEADER_VERSION_MINOR     0
 
 /*@
     The TINY version number defines bug-fixes to existing
     functionality. Range: [0-99].
  */
-#define AR_HEADER_VERSION_TINY		0
+#define AR_HEADER_VERSION_TINY      1
 
 /*@
-    The BUILD version number will always be zero in releases,
-    but may be non-zero in internal builds or in version-control
-    repository-sourced code. Range: [0-99].
+    The DEV version number will always be zero in releases,
+    but may be non-zero in post-release development builds,
+    version-control repository-sourced code, or other. Range: [0-99].
  */
-#define AR_HEADER_VERSION_BUILD		0
+#define AR_HEADER_VERSION_DEV       1
 
 /*@
     The string representation below must match the major, minor
     and tiny release numbers.
  */
-#define AR_HEADER_VERSION_STRING	"6.0.0"
+#define AR_HEADER_VERSION_STRING    "6.0.1"
 
 /*@
     Convenience macros to enable use of certain ARToolKit header
@@ -250,10 +250,11 @@ enum {
 // Top-level config.
 //
 
+#define HAVE_GL 0
+#define HAVE_GLES2 1
+#define HAVE_GL3 0
+
 #define USE_CPARAM_SEARCH 1
-#define USE_GL 0
-#define USE_GLES2 1
-#define USE_GL3 0
 #define USE_GL_STATE_CACHE 1
 #define USE_INSTANTON 0
 

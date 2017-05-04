@@ -19,8 +19,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.hardware.Camera;
+import android.hardware.camera2.CameraCharacteristics;
+import android.hardware.camera2.CameraManager;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.view.GravityCompat;
@@ -53,6 +57,8 @@ import org.opencv.core.Mat;
 
 import java.io.File;
 import java.lang.reflect.Array;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -107,7 +113,7 @@ public class CameraCalibrationActivity extends Activity implements CvCameraViewL
     public static native void nativeSaveParam(double[] cameraMatrix, double[] distortionCoefficientsArray,
                                               int sizeX, int sizeY, float average, float min, float max);
 
-    public static native boolean nativeInitialize(Context ctx,String calibrationServerURL);
+    public static native boolean nativeInitialize(Context ctx,String calibrationServerURL, int cameraId, boolean isFronFacing, String hashedToken);
 
     public static native void nativeStop();
 
@@ -189,19 +195,47 @@ public class CameraCalibrationActivity extends Activity implements CvCameraViewL
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void onResume() {
         super.onResume();
 
         mOpenCvCameraView.enableView();
-        String cameraId = mPrefs.getString(CalibCameraPreferences.PREF_CAMERA_INDEX, this.getString(R.string.pref_defaultValue_cameraIndex));
+        int cameraId = Integer.parseInt(mPrefs.getString(CalibCameraPreferences.PREF_CAMERA_INDEX, this.getString(R.string.pref_defaultValue_cameraIndex)));
 
-        mOpenCvCameraView.setCameraIndex(Integer.parseInt(cameraId));
+
+        mOpenCvCameraView.setCameraIndex(cameraId);
 
         //TODO: Check implication on phones running API level 15 to 19
         mOpenCvCameraView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE | View.SYSTEM_UI_FLAG_IMMERSIVE | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
         String cameraCalibrationServer = mPrefs.getString(CalibCameraPreferences.PREF_CALIBRATION_SERVER,this.getString(R.string.pref_calibrationServerDefault));
-        if (!CameraCalibrationActivity.nativeInitialize(this,cameraCalibrationServer)) {
+        String token = mPrefs.getString(CalibCameraPreferences.PREF_CALIBRATION_SERVER_TOKEN,this.getString(R.string.pref_calibrationServerTokenDefault));
+        String hashedToken = md5(token);
+
+        boolean frontFacing = false;
+
+        CameraManager manager = (CameraManager) mOpenCvCameraView.getContext().getSystemService(Context.CAMERA_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            try {
+                CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId + "");
+                if (characteristics.get(CameraCharacteristics.LENS_FACING) == CameraCharacteristics.LENS_FACING_FRONT) {
+                    frontFacing = true;
+                }
+            } catch (Exception e) {
+
+            }
+        }
+        else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
+            Camera.getCameraInfo(cameraId, cameraInfo);
+            if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) frontFacing = true;
+        }
+        else{
+            Log.e(TAG, "We are running on an Android version that we don't support. That is very weird!");
+        }
+
+        if (!CameraCalibrationActivity.nativeInitialize(this,cameraCalibrationServer,cameraId,frontFacing,hashedToken)) {
             Log.e(TAG, "Native initialize failed. This will cause the calibration upload to fail");
         }
 
@@ -493,6 +527,25 @@ public class CameraCalibrationActivity extends Activity implements CvCameraViewL
                 }
             }
         }
+    }
+
+    private String md5(String s) {
+        try {
+            // Create MD5 Hash
+            MessageDigest digest = MessageDigest.getInstance("MD5");
+            digest.update(s.getBytes());
+            byte messageDigest[] = digest.digest();
+
+            // Create Hex String
+            StringBuffer hexString = new StringBuffer();
+            for (int i=0; i<messageDigest.length; i++)
+                hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
+            return hexString.toString();
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
     //Called from native

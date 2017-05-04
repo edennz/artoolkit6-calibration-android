@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--http://stackoverflow.com/questions/4823442/android-list-preferences-have-summary-as-selected-value-->
     <PreferenceCategory
         android:key="prefCategory_camera"
         android:title="@string/prefCategory_title_camera">
@@ -9,7 +10,8 @@
             android:entries="@array/pref_entries_cameraResolution"
             android:entryValues="@array/pref_entryValues_cameraResolution"
             android:key="pref_cameraResolution"
-            android:title="@string/pref_title_cameraResolution" />
+            android:title="@string/pref_title_cameraResolution"
+            android:summary="%s" />
         <ListPreference
             android:defaultValue="@string/pref_defaultValue_cameraIndex"
             android:dialogTitle="@string/pref_title_cameraIndex"
@@ -33,12 +35,15 @@
             <!--/>-->
     <!--</PreferenceCategory>-->
     <PreferenceCategory
-        android:title="@string/prefCategory_title_calibrationServer"
+        android:title="@string/prefCategory_title_server"
         android:key="prefCategory_server">
         <EditTextPreference
-            android:key="pref_calibrationServer"
-            android:title="@string/prefCategory_title_calibrationServer"
-            android:defaultValue="@string/pref_calibrationServerDefault"
-            />
+            android:key="pref_calibrationServerUrl"
+            android:title="@string/prefCategory_title_server_url"
+            android:defaultValue="@string/pref_calibrationServerDefault" />
+        <EditTextPreference
+            android:key="pref_calibrationServerToken"
+            android:title="@string/prefCategory_title_server_token"
+            android:defaultValue="@string/pref_calibrationServerTokenDefault" />
     </PreferenceCategory>
 </PreferenceScreen>
