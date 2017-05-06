@@ -83,6 +83,8 @@
     <string name="prefCategory_title_server_url">Server URL</string>
     <string name="prefCategory_title_server_token">Calibration server authentication token</string>
     <string name="pref_calibrationServerTokenDefault">ARToolKit6.Rocks</string>
+    <string name="prefCategory_title_sendToARTK">Share calibration with ARToolKit community</string>
+    <string name="pref_calibrationSendToARK_default">true</string>
 
     <plurals name="numberOfPicturesTaken">
         <!--

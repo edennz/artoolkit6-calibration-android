@@ -137,6 +137,7 @@ public class CalibCameraPreferences extends PreferenceActivity implements
     public static final String PREF_PAPER_SIZE = "pref_paperSize";
     public static final String PREF_CALIBRATION_SERVER = "pref_calibrationServerUrl";
     public static final String PREF_CALIBRATION_SERVER_TOKEN = "pref_calibrationServerToken";
+    public static final String PREF_CALIBRATION_SERVER_SHARE_WITH_ARTK = "pref_calibrationSendToARTK";
 
     private ListPreference cameraIndexPreference;
     private ListPreference cameraResolutionPreference;
