@@ -112,6 +112,9 @@ public class CameraCalibrationActivity extends Activity implements CvCameraViewL
 
     public static native void nativeSaveParam(double[] cameraMatrix, double[] distortionCoefficientsArray,
                                               int sizeX, int sizeY, float average, float min, float max);
+    public static native void nativeSaveParamToARTK(double[] cameraMatrixArray, double[] distortionCoefficientsArray,
+                                                    int mWidth, int mHeight, float average, float min, float max,
+                                                    String cameraCalibrationServerARTK, String tokenARTK);
 
     public static native boolean nativeInitialize(Context ctx,String calibrationServerURL, int cameraId, boolean isFronFacing, String hashedToken);
 
@@ -336,6 +339,25 @@ public class CameraCalibrationActivity extends Activity implements CvCameraViewL
         average /= reprojectionErrorArrayList.size();
 
         CameraCalibrationActivity.nativeSaveParam(cameraMatrixArray, distortionCoefficientsArray, mWidth, mHeight,average, min, max);
+
+        boolean shareWithArtkCommunity = mPrefs.getBoolean(CalibCameraPreferences.PREF_CALIBRATION_SERVER_SHARE_WITH_ARTK,Boolean.parseBoolean(this.getString(R.string.pref_calibrationSendToARK_default)));
+
+        if(shareWithArtkCommunity) {
+            String cameraCalibrationServerARTK = mPrefs.getString(this.getString(R.string.pref_calibrationServerDefault),"");
+            String tokenARTK = mPrefs.getString(this.getString(R.string.pref_calibrationServerTokenDefault),"");
+
+            if(! "".equals(cameraCalibrationServerARTK) && ! "".equals(tokenARTK)) {
+
+                //Check if the calibration was already send to ARTK because the user didn't enter any settings which would mean we use the defaults which point to ARTK
+                String cameraCalibrationServer = mPrefs.getString(CalibCameraPreferences.PREF_CALIBRATION_SERVER,this.getString(R.string.pref_calibrationServerDefault));
+                String token = mPrefs.getString(CalibCameraPreferences.PREF_CALIBRATION_SERVER_TOKEN,this.getString(R.string.pref_calibrationServerTokenDefault));
+
+                if( !cameraCalibrationServer.equals(cameraCalibrationServerARTK) && !token.equals(tokenARTK)){
+                    String hashedARTKToken = md5(tokenARTK);
+                    CameraCalibrationActivity.nativeSaveParamToARTK(cameraMatrixArray, distortionCoefficientsArray, mWidth, mHeight, average, min, max, cameraCalibrationServerARTK,hashedARTKToken);
+                }
+            }
+        }
     }
 
     public void onCameraViewStarted(int width, int height) {
@@ -537,11 +559,14 @@ public class CameraCalibrationActivity extends Activity implements CvCameraViewL
             byte messageDigest[] = digest.digest();
 
             // Create Hex String
-            StringBuffer hexString = new StringBuffer();
-            for (int i=0; i<messageDigest.length; i++)
-                hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
+            StringBuilder hexString = new StringBuilder();
+            for (byte aMessageDigest : messageDigest) {
+                String h = Integer.toHexString(0xFF & aMessageDigest);
+                while (h.length() < 2)
+                    h = "0" + h;
+                hexString.append(h);
+            }
             return hexString.toString();
-
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }

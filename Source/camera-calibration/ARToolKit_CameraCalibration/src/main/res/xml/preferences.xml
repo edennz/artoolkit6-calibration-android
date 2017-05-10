@@ -45,5 +45,9 @@
             android:key="pref_calibrationServerToken"
             android:title="@string/prefCategory_title_server_token"
             android:defaultValue="@string/pref_calibrationServerTokenDefault" />
+        <CheckBoxPreference
+            android:key="pref_calibrationSendToARTK"
+            android:title="@string/prefCategory_title_sendToARTK"
+            android:defaultValue="@string/pref_calibrationSendToARK_default" />
     </PreferenceCategory>
 </PreferenceScreen>
