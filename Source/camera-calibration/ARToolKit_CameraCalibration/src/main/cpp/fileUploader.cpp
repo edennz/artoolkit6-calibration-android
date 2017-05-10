@@ -386,7 +386,6 @@ static void *fileUploader(THREAD_HANDLE_T *threadHandle) {
                 } else {
                     curl_formadd(&post, &last, CURLFORM_COPYNAME, buf, CURLFORM_COPYCONTENTS,
                                  commaPos + 1, CURLFORM_END);
-                    ARLOGd("Curl form parameters: %s : %s", buf, commaPos+1)
                 }
             }
 

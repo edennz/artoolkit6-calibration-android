@@ -289,7 +289,6 @@ void saveParam(const ARParam *param, ARdouble err_avg, ARdouble err_min, ARdoubl
 
         // Write the token.
         if (goodWrite) {
-            LOGD("Writing Token hash: %s", gHashedToken);
             fprintf(fp, "ss,%s\n", gHashedToken);
         }
 
@@ -533,7 +532,7 @@ JNIEXPORT jboolean JNICALL JNIFUNCTION_NATIVE(nativeInitialize(JNIEnv *env, jobj
 
     const char *calibServerUrl = env->GetStringUTFChars(calibrationServerUrl, 0);
     const char *hashedToken = env->GetStringUTFChars(token,0);
-    LOGD("Entered nativeInitialize with instanceOfAndroidContext: %p and CalibServerUrl: %s and Token: %s",instanceOfAndroidContext,calibServerUrl,hashedToken);
+    LOGD("Entered nativeInitialize with instanceOfAndroidContext: %p and CalibServerUrl: %s",instanceOfAndroidContext,calibServerUrl);
     arUtilChangeToResourcesDirectory(AR_UTIL_RESOURCES_DIRECTORY_BEHAVIOR_USE_APP_CACHE_DIR, NULL, instanceOfAndroidContext);
 
     gCameraIndex = cameraIndex;
