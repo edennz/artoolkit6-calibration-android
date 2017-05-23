@@ -64,7 +64,7 @@
     <string name="startCalibrationDesc">Start the camera calibration</string>
     <string name="menuDesc">Open the menu</string>
     <string name="guidingText_Preloaded">Calibration from previous run already loaded. Tap on screen to start new calibration.</string>
-    <string name="pref_defaultValue_cameraIndex">99</string>
+    <string name="pref_defaultValue_cameraIndex">0</string>
     <string name="guide_mode_on">Enable guide mode</string>
     <string name="guide_mode_off">Disable guide mode</string>
     <string name="guidemode_intro_text">Scan the calibration pattern and move the corner to the yellow dot.</string>
@@ -83,7 +83,7 @@
     <string name="prefCategory_title_server_url">Server URL</string>
     <string name="prefCategory_title_server_token">Calibration server authentication token</string>
     <string name="pref_calibrationServerTokenDefault">ARToolKit6.Rocks</string>
-    <string name="prefCategory_title_sendToARTK">Share calibration with ARToolKit community</string>
+    <string name="prefCategory_title_sendToARTK">Upload to artoolkit.org</string>
     <string name="pref_calibrationSendToARK_default">true</string>
 
     <plurals name="numberOfPicturesTaken">

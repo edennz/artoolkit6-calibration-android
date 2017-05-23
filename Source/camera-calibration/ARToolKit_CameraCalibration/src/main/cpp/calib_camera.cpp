@@ -151,7 +151,7 @@ JNIEXPORT jboolean JNICALL JNIFUNCTION_NATIVE(nativeStop(JNIEnv *env, jobject ty
 void saveParam(const ARParam *param, ARdouble err_avg, ARdouble err_min, ARdouble err_max) {
     int i;
     #define SAVEPARAM_PATHNAME_LEN 80
-    #define COPY_PARAM_PATHNAME_LEN 80
+    #define COPY_PARAM_PATHNAME_LEN PATH_MAX
 
     char indexPathname[SAVEPARAM_PATHNAME_LEN];
     char paramPathname[SAVEPARAM_PATHNAME_LEN];
@@ -172,7 +172,6 @@ void saveParam(const ARParam *param, ARdouble err_avg, ARdouble err_min, ARdoubl
         LOGE("Error converting time and date to UTC.\n");
         return;
     }
-    int ID = timeptr->tm_hour * 10000 + timeptr->tm_min * 100 + timeptr->tm_sec;
 
     LOGD("About to enter fileUploaderCreateQueueDir fileUploadHandle: %p",fileUploadHandle);
     // Check for QUEUE_DIR and create if not already existing.
@@ -181,13 +180,19 @@ void saveParam(const ARParam *param, ARdouble err_avg, ARdouble err_min, ARdoubl
     }
 
     // Save the parameter file.
-    snprintf(paramPathname, SAVEPARAM_PATHNAME_LEN, "%s/%06d-camera_para.dat", QUEUE_DIR, ID);
+    snprintf(paramPathname, SAVEPARAM_PATHNAME_LEN, "%s/camera_para.dat", QUEUE_DIR);
     if (arParamSave(paramPathname, 1, param) < 0) {
 
         LOGE("Error writing camera_para.dat file.\n");
 
     } else {
-        LOGD("%s/%06d-camera_para.dat created in %s",QUEUE_DIR, ID,paramPathname);
+        LOGD("%s/camera_para.dat created in %s",QUEUE_DIR,paramPathname);
+        char device_id[PROP_VALUE_MAX * 3 +
+                       2]; // From <sys/system_properties.h>. 3 properties plus separators.
+        char camera_index[12]; // 10 digits in INT32_MAX, plus sign, plus null.
+        char camera_width[12]; // 10 digits in INT32_MAX, plus sign, plus null.
+        char camera_height[12]; // 10 digits in INT32_MAX, plus sign, plus null.
+        char focal_length[] = "0.000";
 
         //
         // Write an upload index file with the data for the server database entry.
@@ -196,7 +201,7 @@ void saveParam(const ARParam *param, ARdouble err_avg, ARdouble err_min, ARdoubl
         bool goodWrite = true;
 
         // Open the file.
-        snprintf(indexPathname, SAVEPARAM_PATHNAME_LEN, "%s/%06d-index", QUEUE_DIR, ID);
+        snprintf(indexPathname, SAVEPARAM_PATHNAME_LEN, "%s/index", QUEUE_DIR);
         FILE *fp;
         if (!(fp = fopen(indexPathname, "wb"))) {
             LOGE("Error opening upload index file '%s'.\n", indexPathname);
@@ -229,8 +234,6 @@ void saveParam(const ARParam *param, ARdouble err_avg, ARdouble err_min, ARdoubl
 
         // Handset ID, via <sys/system_properties.h>.
         if (goodWrite) {
-            char device_id[PROP_VALUE_MAX * 3 +
-                           2]; // From <sys/system_properties.h>. 3 properties plus separators.
             int len;
             len = __system_property_get(ANDROID_OS_BUILD_MANUFACTURER,
                                         device_id); // len = (int)strlen(device_id).
@@ -246,13 +249,11 @@ void saveParam(const ARParam *param, ARdouble err_avg, ARdouble err_min, ARdoubl
         // Focal length in metres.
         // Not known at present, so just send 0.000.
         if (goodWrite) {
-            char focal_length[] = "0.000";
             fprintf(fp, "focal_length,%s\n", focal_length);
         }
 
         // Camera index.
         if (goodWrite) {
-            char camera_index[12]; // 10 digits in INT32_MAX, plus sign, plus null.
             snprintf(camera_index, 12, "%d", gCameraIndex);
             fprintf(fp, "camera_index,%s\n", camera_index);
         }
@@ -266,8 +267,6 @@ void saveParam(const ARParam *param, ARdouble err_avg, ARdouble err_min, ARdoubl
 
         // Camera dimensions.
         if (goodWrite) {
-            char camera_width[12]; // 10 digits in INT32_MAX, plus sign, plus null.
-            char camera_height[12]; // 10 digits in INT32_MAX, plus sign, plus null.
             snprintf(camera_width, 12, "%d", videoWidth);
             snprintf(camera_height, 12, "%d", videoHeight);
             fprintf(fp, "camera_width,%s\n", camera_width);
@@ -297,18 +296,34 @@ void saveParam(const ARParam *param, ARdouble err_avg, ARdouble err_min, ARdoubl
 
         LOGD("camera_para.dat has been written");
 
-        char timestamp4Calib[14] = "";
-        if (!strftime(timestamp4Calib, sizeof(timestamp4Calib), "%Y-%m-%d", timeptr)) {
-            LOGE("Error formatting time and date.\n");
-        } else {
-            snprintf(destPathname, COPY_PARAM_PATHNAME_LEN, "%s/%s_%06d-camera_para.dat",COPY_DIR,timestamp4Calib, ID);
-            //Writing camera_para a second time to make it available to the user for sharing/download
-            fileUploaderCreateDir(COPY_DIR);
-            LOGD("Try to create %s for sharing", destPathname);
-            if (arParamSave(destPathname, 1, param) < 0) {
-                LOGE("Error writing copy of camera_para.dat file.\n");
-            }
+        snprintf(destPathname, COPY_PARAM_PATHNAME_LEN, "%s/camera_para-",COPY_DIR);
+
+        size_t len = strlen(destPathname);
+        int i = 0;
+        while (device_id[i] && (len + i + 2 < SAVEPARAM_PATHNAME_LEN)) {
+            destPathname[len + i] = (device_id[i] == '/' || device_id[i] == '\\' ? '_' : device_id[i]);
+            i++;
         }
+        destPathname[len + i] = '\0';
+        len = strlen(destPathname);
+        snprintf(&destPathname[len], COPY_PARAM_PATHNAME_LEN - len, "-%s-%sx%s",camera_index,camera_width,camera_height);
+
+        len = strlen(destPathname);
+        if (strcmp(focal_length, "0.000") != 0) {
+            snprintf(&destPathname[len], SAVEPARAM_PATHNAME_LEN - len, "-%s", focal_length);
+            len = strlen(destPathname);
+        }
+        snprintf(&destPathname[len], SAVEPARAM_PATHNAME_LEN - len, ".dat");
+        //snprintf(destPathname, COPY_PARAM_PATHNAME_LEN, "%s/%s_%06d-camera_para.dat",COPY_DIR,timestamp4Calib, ID);
+
+
+        //Writing camera_para a second time to make it available to the user for sharing/download
+        fileUploaderCreateDir(COPY_DIR);
+        LOGD("Try to create %s for sharing", destPathname);
+        if (arParamSave(destPathname, 1, param) < 0) {
+            LOGE("Error writing copy of camera_para.dat file.\n");
+        }
+
 
         if (goodWrite) {
             // Rename the file with QUEUE_INDEX_FILE_EXTENSION file extension so it's picked up in uploader.
