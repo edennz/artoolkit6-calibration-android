@@ -8,7 +8,7 @@
     <string name="calibration_successful">Successfully calibrated!\nAvg. re-projection error:</string>
     <string name="calibration_unsuccessful">Unsuccessful calibration.\nTry again</string>
     <string name="more_samples">Please, capture more samples</string>
-    <string name="calibrating">Calibrating…</string>
+    <string name="calibrating">Calibrati...</string>
     <string name="please_wait">Please, wait</string>
     <string name="original">Original</string>
 
@@ -72,7 +72,8 @@
     <string name="text_calibrationFinished">Calibration finished. Now in preview mode.</string>
     <string name="text_frameRejected">Frame rejected as the angle from camera to pattern is to steep. Angle > 40˚</string>
     <string name="prefCategory_title_server">Server settings</string>
-    <string name="pref_calibrationServerDefault">http://192.168.42:8080/app/calib_camera/upload.php</string>
+    <string name="pref_calibrationServerDefault">https://calibration.artoolkit.org/app/calib_camera/upload.php</string>
+    <string name="pref_calibrationServerTokenDefault">ARToolKit6.Rocks</string>
     <string name="calib_stats">Calibration statistics</string>
     <string name="string_averageReproErr">- Average reprojection error</string>
     <string name="removeFrame">Remove frame from calibration</string>
@@ -82,7 +83,6 @@
     <string name="camera_lense_content_description">camera lense taking a picture</string>
     <string name="prefCategory_title_server_url">Server URL</string>
     <string name="prefCategory_title_server_token">Calibration server authentication token</string>
-    <string name="pref_calibrationServerTokenDefault">ARToolKit6.Rocks</string>
     <string name="prefCategory_title_sendToARTK">Upload to artoolkit.org</string>
     <string name="pref_calibrationSendToARK_default">true</string>
 

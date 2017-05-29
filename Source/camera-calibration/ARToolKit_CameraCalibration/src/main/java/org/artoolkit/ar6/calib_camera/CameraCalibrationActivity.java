@@ -347,8 +347,8 @@ public class CameraCalibrationActivity extends Activity implements CvCameraViewL
             String tokenARTK = mPrefs.getString(this.getString(R.string.pref_calibrationServerTokenDefault),"");
 
             if(! "".equals(cameraCalibrationServerARTK) && ! "".equals(tokenARTK)) {
-
                 //Check if the calibration was already send to ARTK because the user didn't enter any settings which would mean we use the defaults which point to ARTK
+
                 String cameraCalibrationServer = mPrefs.getString(CalibCameraPreferences.PREF_CALIBRATION_SERVER,this.getString(R.string.pref_calibrationServerDefault));
                 String token = mPrefs.getString(CalibCameraPreferences.PREF_CALIBRATION_SERVER_TOKEN,this.getString(R.string.pref_calibrationServerTokenDefault));
 
