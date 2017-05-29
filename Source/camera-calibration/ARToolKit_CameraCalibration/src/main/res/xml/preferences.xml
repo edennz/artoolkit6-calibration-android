@@ -37,17 +37,21 @@
     <PreferenceCategory
         android:title="@string/prefCategory_title_server"
         android:key="prefCategory_server">
-        <EditTextPreference
-            android:key="pref_calibrationServerUrl"
-            android:title="@string/prefCategory_title_server_url"
-            android:defaultValue="@string/pref_calibrationServerDefault" />
-        <EditTextPreference
-            android:key="pref_calibrationServerToken"
-            android:title="@string/prefCategory_title_server_token"
-            android:defaultValue="@string/pref_calibrationServerTokenDefault" />
         <CheckBoxPreference
             android:key="pref_calibrationSendToARTK"
             android:title="@string/prefCategory_title_sendToARTK"
-            android:defaultValue="@string/pref_calibrationSendToARK_default" />
+            android:defaultValue="@string/pref_calibrationSendToARK_default"
+            android:disableDependentsState="true" />
+        <EditTextPreference
+            android:key="pref_calibrationServerUrl"
+            android:title="@string/prefCategory_title_server_url"
+            android:defaultValue="@string/pref_calibrationServerDefault"
+            android:dependency="pref_calibrationSendToARTK"/>
+        <EditTextPreference
+            android:key="pref_calibrationServerToken"
+            android:title="@string/prefCategory_title_server_token"
+            android:defaultValue="@string/pref_calibrationServerTokenDefault"
+            android:dependency="pref_calibrationSendToARTK"/>
+
     </PreferenceCategory>
 </PreferenceScreen>

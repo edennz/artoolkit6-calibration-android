@@ -112,9 +112,6 @@ public class CameraCalibrationActivity extends Activity implements CvCameraViewL
 
     public static native void nativeSaveParam(double[] cameraMatrix, double[] distortionCoefficientsArray,
                                               int sizeX, int sizeY, float average, float min, float max);
-    public static native void nativeSaveParamToARTK(double[] cameraMatrixArray, double[] distortionCoefficientsArray,
-                                                    int mWidth, int mHeight, float average, float min, float max,
-                                                    String cameraCalibrationServerARTK, String tokenARTK);
 
     public static native boolean nativeInitialize(Context ctx,String calibrationServerURL, int cameraId, boolean isFronFacing, String hashedToken);
 
@@ -211,9 +208,20 @@ public class CameraCalibrationActivity extends Activity implements CvCameraViewL
         //TODO: Check implication on phones running API level 15 to 19
         mOpenCvCameraView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE | View.SYSTEM_UI_FLAG_IMMERSIVE | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
-        String cameraCalibrationServer = mPrefs.getString(CalibCameraPreferences.PREF_CALIBRATION_SERVER,this.getString(R.string.pref_calibrationServerDefault));
-        String token = mPrefs.getString(CalibCameraPreferences.PREF_CALIBRATION_SERVER_TOKEN,this.getString(R.string.pref_calibrationServerTokenDefault));
-        String hashedToken = md5(token);
+        boolean shareWithArtkCommunity = mPrefs.getBoolean(CalibCameraPreferences.PREF_CALIBRATION_SERVER_SHARE_WITH_ARTK,Boolean.parseBoolean(this.getString(R.string.pref_calibrationSendToARK_default)));
+
+        String cameraCalibrationServer = "";
+        String hashedToken = "";
+        String token = "";
+        if(shareWithArtkCommunity) {
+            cameraCalibrationServer = this.getString(R.string.pref_calibrationServerARTK);
+            token = this.getString(R.string.pref_calibrationServerTokenARTK);
+            hashedToken = md5(token);
+        }else{
+            cameraCalibrationServer = mPrefs.getString(CalibCameraPreferences.PREF_CALIBRATION_SERVER,this.getString(R.string.pref_calibrationServerDefault));
+            token = mPrefs.getString(CalibCameraPreferences.PREF_CALIBRATION_SERVER_TOKEN,this.getString(R.string.pref_calibrationServerTokenDefault));
+            hashedToken = md5(token);
+        }
 
         boolean frontFacing = false;
 
@@ -339,24 +347,6 @@ public class CameraCalibrationActivity extends Activity implements CvCameraViewL
         average /= reprojectionErrorArrayList.size();
 
         CameraCalibrationActivity.nativeSaveParam(cameraMatrixArray, distortionCoefficientsArray, mWidth, mHeight,average, min, max);
-
-        boolean shareWithArtkCommunity = mPrefs.getBoolean(CalibCameraPreferences.PREF_CALIBRATION_SERVER_SHARE_WITH_ARTK,Boolean.parseBoolean(this.getString(R.string.pref_calibrationSendToARK_default)));
-
-        if(shareWithArtkCommunity) {
-            String cameraCalibrationServerARTK = mPrefs.getString(this.getString(R.string.pref_calibrationServerARTK),"");
-            String tokenARTK = mPrefs.getString(this.getString(R.string.pref_calibrationServerTokenARTK),"");
-
-            if(! "".equals(cameraCalibrationServerARTK) && ! "".equals(tokenARTK)) {
-
-                //Check if the entered setting are the same we use for ARTK in that case we won't upload it again
-                String cameraCalibrationServer = mPrefs.getString(CalibCameraPreferences.PREF_CALIBRATION_SERVER,this.getString(R.string.pref_calibrationServerDefault));
-                String token = mPrefs.getString(CalibCameraPreferences.PREF_CALIBRATION_SERVER_TOKEN,this.getString(R.string.pref_calibrationServerTokenDefault));
-                if( !cameraCalibrationServer.equals(cameraCalibrationServerARTK) && !token.equals(tokenARTK)){
-                    String hashedARTKToken = md5(tokenARTK);
-                    CameraCalibrationActivity.nativeSaveParamToARTK(cameraMatrixArray, distortionCoefficientsArray, mWidth, mHeight, average, min, max, cameraCalibrationServerARTK,hashedARTKToken);
-                }
-            }
-        }
     }
 
     public void onCameraViewStarted(int width, int height) {

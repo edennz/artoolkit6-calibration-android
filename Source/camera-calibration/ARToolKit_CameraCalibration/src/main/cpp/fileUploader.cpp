@@ -346,10 +346,18 @@ static void *fileUploader(THREAD_HANDLE_T *threadHandle) {
             }
 
             ARLOGd("6 We have a curl handle. Continue ...");
-            // Network OK, so proceed with upload.
-            curlErr = curl_easy_setopt(curlHandle, CURLOPT_URL, fileUploaderHandle->formPostURL);
-            if (curlErr != CURLE_OK) {
-                ARLOGe("Error setting CURL URL: %s (%d)\n", curl_easy_strerror(curlErr), curlErr);
+            if(strcmp("",fileUploaderHandle->formPostURL) != 0) {
+                // Network OK, so proceed with upload.
+                curlErr = curl_easy_setopt(curlHandle, CURLOPT_URL,
+                                           fileUploaderHandle->formPostURL);
+                if (curlErr != CURLE_OK) {
+                    ARLOGe("Error setting CURL URL: %s (%d)\n", curl_easy_strerror(curlErr),
+                           curlErr);
+                    errorCode = -1;
+                    break;
+                }
+            }else{
+                ARLOGe("No upload URL provided. Stop");
                 errorCode = -1;
                 break;
             }

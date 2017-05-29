@@ -109,7 +109,7 @@ static int videoWidth = 0;                                          ///< Width o
 static int videoHeight = 0;                                         ///< Height of the video frame in pixels.
 static int gCameraIndex = 0;
 static bool gCameraIsFrontFacing = false;
-char gHashedToken[32];
+char gHashedToken[33];
 
 JavaVM *jvm = NULL;
 
@@ -139,9 +139,6 @@ extern "C" {
 JNIEXPORT void JNICALL JNIFUNCTION_NATIVE(nativeSaveParam(JNIEnv *env, jobject type,
         jdoubleArray cameraMatrix, jdoubleArray distortionCoefficientsArray_,int sizeX, int sizeY,
         float average, float min, float max));
-JNIEXPORT bool JNICALL JNIFUNCTION_NATIVE(nativeSaveParamToARTK(JNIEnv *env, jobject type,
-        jdoubleArray cameraMatrix, jdoubleArray distortionCoefficientsArray_,int sizeX, int sizeY,
-        float average, float min, float max, jstring calibrationServerARTKUrl, jstring artkToken));
 JNIEXPORT jboolean JNICALL JNIFUNCTION_NATIVE(nativeInitialize(JNIEnv *env, jobject type,
                       jobject instanceOfAndroidContext, jstring calibrationServerUrl,jint cameraIndex, jboolean cameraIsFrontFacing, jstring token));
 JNIEXPORT jboolean JNICALL JNIFUNCTION_NATIVE(nativeStop(JNIEnv *env, jobject type));
@@ -550,13 +547,13 @@ JNIEXPORT jboolean JNICALL JNIFUNCTION_NATIVE(nativeInitialize(JNIEnv *env, jobj
     LOGD("Entered nativeInitialize with instanceOfAndroidContext: %p and CalibServerUrl: %s",instanceOfAndroidContext,calibServerUrl);
     arUtilChangeToResourcesDirectory(AR_UTIL_RESOURCES_DIRECTORY_BEHAVIOR_USE_APP_CACHE_DIR, NULL, instanceOfAndroidContext);
 
-    gCameraIndex = cameraIndex;
-    gCameraIsFrontFacing = cameraIsFrontFacing;
-    strcpy(gHashedToken,hashedToken);
-
     //Save instance to JVM
     env->GetJavaVM(&jvm);
     objectCameraCalibActivity = env->NewGlobalRef(instanceOfAndroidContext);
+
+    gCameraIndex = cameraIndex;
+    gCameraIsFrontFacing = cameraIsFrontFacing;
+    strcpy(gHashedToken,hashedToken);
 
     fileUploadHandle = fileUploaderInit(QUEUE_DIR, QUEUE_INDEX_FILE_EXTENSION, calibServerUrl,
                                         UPLOAD_STATUS_HIDE_AFTER_SECONDS);
@@ -569,51 +566,17 @@ JNIEXPORT jboolean JNICALL JNIFUNCTION_NATIVE(nativeInitialize(JNIEnv *env, jobj
     return (jboolean) fileUploaderTickle(fileUploadHandle);
 }
 
-JNIEXPORT bool JNICALL JNIFUNCTION_NATIVE(nativeSaveParamToARTK(JNIEnv *env, jobject type,
-        jdoubleArray cameraMatrix_, jdoubleArray distortionCoefficientsArray_, int sizeX, int sizeY,
-        float average, float min, float max, jstring calibrationServerARTKUrl, jstring artkToken )) {
-
+void JNICALL JNIFUNCTION_NATIVE(nativeSaveParam(JNIEnv * env, jobject type,
+        jdoubleArray cameraMatrix_,
+        jdoubleArray distortionCoefficientsArray_, int sizeX, int sizeY, float average, float min, float max)) {
     jsize camMatLen = env->GetArrayLength(cameraMatrix_);
     jsize distLen = env->GetArrayLength(distortionCoefficientsArray_);
 
     jdouble *distortionCoefficientsArray = env->GetDoubleArrayElements(distortionCoefficientsArray_,
                                                                        NULL);
     jdouble *cameraMatrix = env->GetDoubleArrayElements(cameraMatrix_,
-                                                        NULL);
+                                                                       NULL);
 
-    //save old settings
-    char hashedToken[32];
-    strcpy(hashedToken,gHashedToken);
-    const char *artkHashedToken = env->GetStringUTFChars(artkToken,0);
-    strcpy(gHashedToken,artkHashedToken);
-
-    const char *calibServerARTKUrl = env->GetStringUTFChars(calibrationServerARTKUrl, 0);
-
-
-    _FILE_UPLOAD_HANDLE* oldFileUploadHandle = fileUploadHandle;
-
-    fileUploadHandle = fileUploaderInit(QUEUE_DIR, QUEUE_INDEX_FILE_EXTENSION, calibServerARTKUrl,
-                                        UPLOAD_STATUS_HIDE_AFTER_SECONDS);
-
-    c_nativeSaveParam(min,average,sizeX,max,sizeY,camMatLen,distLen,distortionCoefficientsArray,cameraMatrix);
-
-    //restore old settings
-    strcpy(gHashedToken,hashedToken);
-
-    fileUploaderFinal(&fileUploadHandle);
-    fileUploadHandle = oldFileUploadHandle;
-
-    env->ReleaseStringUTFChars(calibrationServerARTKUrl, calibServerARTKUrl);
-    env->ReleaseStringUTFChars(artkToken,artkHashedToken);
-    env->ReleaseDoubleArrayElements(distortionCoefficientsArray_, distortionCoefficientsArray, JNI_ABORT);
-    env->ReleaseDoubleArrayElements(cameraMatrix_, cameraMatrix, JNI_ABORT);
-
-}
-
-
-JNIEXPORT void c_nativeSaveParam(float min, float average, int sizeX, float max, int sizeY, jsize camMatLen,
-                                 jsize distLen, const jdouble *distortionCoefficientsArray,
-                                 const jdouble *cameraMatrix) {
     LOGI("1 Called nativeSaveParam with x: %d, y: %d  ", sizeX, sizeY);
     videoWidth = sizeX;
     videoHeight = sizeY;
@@ -640,21 +603,6 @@ JNIEXPORT void c_nativeSaveParam(float min, float average, int sizeX, float max,
 
     convParam(dist,sizeX,sizeY,fx,fy,x0,y0,&param);
     saveParam(&param,average,min,max);
-}
-
-void JNICALL JNIFUNCTION_NATIVE(nativeSaveParam(JNIEnv * env, jobject type,
-        jdoubleArray cameraMatrix_,
-        jdoubleArray distortionCoefficientsArray_, int sizeX, int sizeY, float average, float min, float max)) {
-    jsize camMatLen = env->GetArrayLength(cameraMatrix_);
-    jsize distLen = env->GetArrayLength(distortionCoefficientsArray_);
-
-    jdouble *distortionCoefficientsArray = env->GetDoubleArrayElements(distortionCoefficientsArray_,
-                                                                       NULL);
-    jdouble *cameraMatrix = env->GetDoubleArrayElements(cameraMatrix_,
-                                                                       NULL);
-
-    c_nativeSaveParam(min, average, sizeX, max, sizeY, camMatLen, distLen,
-                      distortionCoefficientsArray, cameraMatrix);
 
     env->ReleaseDoubleArrayElements(distortionCoefficientsArray_, distortionCoefficientsArray, JNI_ABORT);
     env->ReleaseDoubleArrayElements(cameraMatrix_, cameraMatrix, JNI_ABORT);
