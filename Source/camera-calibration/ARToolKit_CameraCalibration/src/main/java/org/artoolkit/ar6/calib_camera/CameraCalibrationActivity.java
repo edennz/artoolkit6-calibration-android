@@ -343,15 +343,14 @@ public class CameraCalibrationActivity extends Activity implements CvCameraViewL
         boolean shareWithArtkCommunity = mPrefs.getBoolean(CalibCameraPreferences.PREF_CALIBRATION_SERVER_SHARE_WITH_ARTK,Boolean.parseBoolean(this.getString(R.string.pref_calibrationSendToARK_default)));
 
         if(shareWithArtkCommunity) {
-            String cameraCalibrationServerARTK = mPrefs.getString(this.getString(R.string.pref_calibrationServerDefault),"");
-            String tokenARTK = mPrefs.getString(this.getString(R.string.pref_calibrationServerTokenDefault),"");
+            String cameraCalibrationServerARTK = mPrefs.getString(this.getString(R.string.pref_calibrationServerARTK),"");
+            String tokenARTK = mPrefs.getString(this.getString(R.string.pref_calibrationServerTokenARTK),"");
 
             if(! "".equals(cameraCalibrationServerARTK) && ! "".equals(tokenARTK)) {
-                //Check if the calibration was already send to ARTK because the user didn't enter any settings which would mean we use the defaults which point to ARTK
 
+                //Check if the entered setting are the same we use for ARTK in that case we won't upload it again
                 String cameraCalibrationServer = mPrefs.getString(CalibCameraPreferences.PREF_CALIBRATION_SERVER,this.getString(R.string.pref_calibrationServerDefault));
                 String token = mPrefs.getString(CalibCameraPreferences.PREF_CALIBRATION_SERVER_TOKEN,this.getString(R.string.pref_calibrationServerTokenDefault));
-
                 if( !cameraCalibrationServer.equals(cameraCalibrationServerARTK) && !token.equals(tokenARTK)){
                     String hashedARTKToken = md5(tokenARTK);
                     CameraCalibrationActivity.nativeSaveParamToARTK(cameraMatrixArray, distortionCoefficientsArray, mWidth, mHeight, average, min, max, cameraCalibrationServerARTK,hashedARTKToken);

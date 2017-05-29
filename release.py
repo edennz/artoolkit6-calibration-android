@@ -4,9 +4,9 @@ tree = ET.parse('Source/camera-calibration/ARToolKit_CameraCalibration/src/main/
 root = tree.getroot()
 for value in root.findall('string'):
     print(value.get('name'))
-    if  value.get('name') == "pref_calibrationServerDefault":
+    if  value.get('name') == "pref_calibrationServerARTK":
         value.text= str(os.getenv('ARTK_SERVER_URL_PROD','ARTK_URL'))
-    if value.get('name') == 'pref_calibrationServerTokenDefault':
+    if value.get('name') == 'pref_calibrationServerTokenARTK':
         value.text= str(os.getenv('ARTK_SERVER_TOKEN_PROD','ARTK_TOKEN'))
 
 tree.write('Source/camera-calibration/ARToolKit_CameraCalibration/src/main/res/values/strings.xml')
